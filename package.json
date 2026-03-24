@@ -1,0 +1,17 @@
+{
+  "name": "fare-checker",
+  "version": "1.0.0",
+  "description": "Browser-backed Google Flights fare checker for London-Tokyo premium economy sweeps.",
+  "type": "module",
+  "main": "google-flights-checker.mjs",
+  "scripts": {
+    "check": "node google-flights-checker.mjs",
+    "test:smoke": "node google-flights-checker.mjs --start 2026-03-31 --end 2026-04-30 --trip-lengths 7 --every-days 7 --max-queries 2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "^1.58.2"
+  }
+}
