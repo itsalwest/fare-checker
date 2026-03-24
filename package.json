@@ -6,12 +6,15 @@
   "main": "google-flights-checker.mjs",
   "scripts": {
     "check": "node google-flights-checker.mjs",
-    "test:smoke": "node google-flights-checker.mjs --start 2026-03-31 --end 2026-04-30 --trip-lengths 7 --every-days 7 --max-queries 2"
+    "test:smoke": "node google-flights-checker.mjs --start 2026-03-31 --end 2026-04-30 --trip-lengths 7 --every-days 7 --max-queries 2",
+    "web:build": "npm --prefix web run build",
+    "serve": "node server.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^5.1.0",
     "playwright": "^1.58.2"
   }
 }

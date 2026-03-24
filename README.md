@@ -1,50 +1,47 @@
 # Fare checker: London → Tokyo premium economy (browser-backed)
 
-This is a small Playwright CLI that uses a real Chromium browser to query **Google Flights** and extract **non-stop** round-trip fares for **Premium economy**.
-
-Why this exists: static fetches and cheap scraping approaches get blocked fast on flight sites. This uses an actual browser session instead.
+This is a small Playwright-based checker for Google Flights, plus a tiny local web server so you can run searches from a browser on your VPS over VPN/Tailscale.
 
 ## What it does
 
-- Opens Google Flights in Chromium
-- Accepts cookie consent if shown
-- Sets dates, route, and cabin
-- Runs searches across a date sweep
-- Parses **non-stop** offers from the result page text
+- Uses a real Chromium browser via Playwright
+- Searches Google Flights for **London → Tokyo**
+- Focuses on **Premium economy** and **Non-stop** offers
+- Sweeps a date range and trip lengths
 - Writes `output/results.json` and `output/results.csv`
-- Saves screenshots on failures/block pages
+- Can also be driven from a local web UI hosted by this machine
 
 ## Install
-
-Already done on this box during setup, but on a fresh machine:
 
 ```bash
 npm install
 npx playwright install chromium
 ```
 
-If Chromium fails to launch on Ubuntu/Debian, you may also need system libs:
+If Chromium is missing system libs on Ubuntu/Debian:
 
 ```bash
 npx playwright install-deps chromium
 ```
 
+## Run the local site
+
+```bash
+npm run web:build
+npm run serve
+```
+
+Then open the local hosted URL from your VPN-connected device.
+
 ## Quick test
 
 ```bash
-cd /root/.openclaw/workspace/fare-checker
-node google-flights-checker.mjs \
-  --start 2026-03-31 \
-  --end 2026-04-30 \
-  --trip-lengths 7 \
-  --every-days 7 \
-  --max-queries 2
+npm run test:smoke
 ```
 
-## Wider sweep across the rest of 2026
+## Wider sweep example
 
 ```bash
-cd /root/.openclaw/workspace/fare-checker
 node google-flights-checker.mjs \
   --start 2026-03-31 \
   --end 2026-12-31 \
@@ -53,29 +50,15 @@ node google-flights-checker.mjs \
   --headed
 ```
 
-Notes:
-- `--headed` is useful if Google throws a block / consent / challenge page.
-- More searches = more time + higher chance of anti-bot friction.
-- Keep the sweep fairly coarse first, then zoom in around promising dates.
-
 ## Outputs
 
-- `output/results.json` — full parsed data and config
-- `output/results.csv` — spreadsheet-friendly summary
-- `output/error-*.png` — screenshots for failed searches
+- `output/results.json`
+- `output/results.csv`
+- `output/error-*.png`
 
 ## Limitations
 
-- Parsing is based on current Google Flights page text structure, so Google UI changes can break it.
-- This is not an official API.
-- Past dates cannot be queried.
-- Anti-bot / block pages can still happen, especially on large sweeps.
-- "Direct" here means parsed from results labeled **Non-stop**.
-
-## Useful flags
-
-- `--headed` — visible browser
-- `--max-queries N` — cap run size while testing
-- `--every-days N` — search cadence
-- `--trip-lengths 7,10,14` — return lengths to test
-- `--out-dir path` — alternate output folder
+- This is not an official API
+- Google UI changes can break parsing
+- Large sweeps may hit anti-bot pages
+- Best hosted privately over Tailscale/VPN
